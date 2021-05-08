@@ -1,0 +1,44 @@
+* {
+  margin: 0px;
+  padding: 0px;
+}
+
+.App {
+  header {
+    color: black;
+    height: 70px;
+    margin-top: 10px;
+    color: white;
+    font-size: 50px;
+    width: 100wh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url("https://images.squarespace-cdn.com/content/v1/55353a22e4b0ff30bba29d10/1466506158787-0M5X940LHJYUKONYW4T8/ke17ZwdGBToddI8pDm48kPN_mworBnwcmpNxgML4En17gQa3H78H3Y0txjaiv_0fgkxBWjjRb1N_UxbACPPq6s92jIdx7oT_BLWUADjrcDcvF9L1sBxSwIxzXZS1C8kzrCLSIWAQvdC7iWmC9HNtRdb-hnCqoepq4X8c1traqO8-tj5t1BUJ-X05KKsynFA1Lat0pHmVOfSc5bKU8OsFVA/space+pattern-tile-02.jpg");
+  }
+  .container {
+    height: 100%;
+    width: 100%;
+    max-width: 1080px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    .rover_select {
+      width: 300px;
+      margin-top: 5px;
+      .MuiSelect-root {
+        background-color: white;
+        display: flex;
+        justify-content: center;
+      }
+      .MuiSelect-select {
+        display: flex;
+        justify-content: center;
+      }
+    }
+    .MuiList-root {
+      width: 300px;
+    }
+  }
+}
