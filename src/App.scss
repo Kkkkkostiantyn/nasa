@@ -26,7 +26,7 @@ body {
     height: 100%;
     width: 100%;
     max-width: 1080px;
-    padding: 0 10px 0 10px;
+    padding: 0 10px 10px 10px;
     margin: auto;
     display: flex;
     flex-direction: column;
@@ -60,6 +60,7 @@ body {
         justify-content: center;
       }
     }
+
     .MuiList-root {
       width: 100%;
       display: flex;
@@ -69,6 +70,7 @@ body {
         width: 130px;
       }
     }
+
     .sol_select {
       margin-top: 30px;
       width: 100%;
@@ -90,6 +92,7 @@ body {
         width: 20%;
       }
     }
+
     .photos {
       margin-top: 30px;
       width: 100%;
@@ -98,7 +101,12 @@ body {
       gap: 20px;
       img {
         width: 100%;
+        height: 100%;
       }
+    }
+    
+    .loadMoreButton {
+      margin-top: 10px;
     }
   }
 }

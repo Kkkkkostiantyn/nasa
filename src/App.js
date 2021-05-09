@@ -14,8 +14,8 @@ import FlightLandRoundedIcon from "@material-ui/icons/FlightLandRounded";
 import QueryBuilderRoundedIcon from "@material-ui/icons/QueryBuilderRounded";
 import Slider from "@material-ui/core/Slider";
 import React from "react";
-import Input from "@material-ui/core/Input";
 import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
 
 function App() {
   const [rover, setRover] = useState(null);
@@ -23,8 +23,7 @@ function App() {
   const [camera, setCamera] = useState(null);
   const [sol, setSol] = useState(0);
   const [photos, setPhotos] = useState([]);
-
-  const key = "api_key = IS8tNjdFom9KZaHuJDDeBbqGxFN0hwKvY2KI9pR";
+  const [pageCount, setPageCount] = useState(1);
 
   const roverSelectHandler = (event) => {
     setRover(event.target.value);
@@ -34,6 +33,8 @@ function App() {
   };
   const cameraSelectHandler = (event) => {
     setCamera(event.target.value);
+    setSol(0);
+    setPhotos([]);
   };
 
   const solSliderHanlder = (event, newValue) => {
@@ -44,23 +45,36 @@ function App() {
     setSol(event.target.value);
   };
 
+  const loadMoreHandler = () => {
+    console.log("load more")
+    setPageCount(prev => {
+      fetchPhotos(prev + 1);
+      return(prev + 1);
+    });
+  }
+
   const fetchRovers = () => {
     fetch(
       "https://api.nasa.gov/mars-photos/api/v1/rovers?api_key=IS8tNjdFom9KZaHuJDDeBbqGxFN0hwKvY2KI9pRd"
     )
-      .then((response) => response.json())
-      .then((response) => {
-        setRoverData(response.rovers);
-      });
+      .then(response => response.json())
+      .then(response => setRoverData(response.rovers))
+      .catch(error => alert("Error occured: " + error));
   };
 
-  const fetchPhotos = () => {
+  const fetchPhotos = (page = 1) => {
+    console.log("fetching photos")
     fetch(
-      `https://api.nasa.gov/mars-photos/api/v1/rovers/${rover.name}/photos?sol=${sol}&camera=${camera.name}&page=1&api_key=IS8tNjdFom9KZaHuJDDeBbqGxFN0hwKvY2KI9pRd`
+      `https://api.nasa.gov/mars-photos/api/v1/rovers/${rover.name}/photos?sol=${sol}&camera=${camera.name}&page=${page}&api_key=IS8tNjdFom9KZaHuJDDeBbqGxFN0hwKvY2KI9pRd`
     )
-      .then((response) => response.json())
-      .then((response) => setPhotos(response.photos))
-      .catch(error => alert("Error occured: " + error))
+      .then(response => response.json())
+      .then(response => {
+        setPhotos((prev) => prev.concat(response.photos));
+        if (page > 1 && response.photos.length === 0) {
+          alert("Last Page");
+        }
+      })
+      .catch(error => alert("Error occured: " + error));
   };
 
   useEffect(() => {
@@ -68,6 +82,8 @@ function App() {
   }, []);
 
   useEffect(() => {
+    setPhotos([]);
+    setPageCount(1);
     if (sol > 0) {
       fetchPhotos();
     }
@@ -185,12 +201,21 @@ function App() {
     );
 
   const Photos =
-    sol < 0 && photos.length === 0 ? null : (
-      <div className="photos">
-        {photos.map((e) => (
-          <img className="photo" key={e.id} src={e.img_src} />
-        ))}
-      </div>
+    sol < 1 ? null : photos.length === 0 ? (
+      <div>There are no photos for selected sol</div>
+    ) : (
+      <>
+        <div className="photos">
+          {photos.map((e) => (
+            <img className="photo" key={e.id} src={e.img_src} />
+          ))}
+        </div>
+        {photos.length < 24 ? null : (
+          <Button onClick={loadMoreHandler} className="loadMoreButton" variant="contained" color="primary">
+            Load More
+          </Button>
+        )}
+      </>
     );
 
   return (
