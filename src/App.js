@@ -15,6 +15,7 @@ import QueryBuilderRoundedIcon from "@material-ui/icons/QueryBuilderRounded";
 import Slider from "@material-ui/core/Slider";
 import React from "react";
 import Input from "@material-ui/core/Input";
+import TextField from "@material-ui/core/TextField";
 
 function App() {
   const [rover, setRover] = useState(null);
@@ -28,11 +29,12 @@ function App() {
   const roverSelectHandler = (event) => {
     setRover(event.target.value);
     setCamera(null);
+    setSol(0);
+    setPhotos([]);
   };
   const cameraSelectHandler = (event) => {
     setCamera(event.target.value);
   };
-
 
   const solSliderHanlder = (event, newValue) => {
     setSol(newValue);
@@ -42,17 +44,34 @@ function App() {
     setSol(event.target.value);
   };
 
-
-  useEffect(() => {
+  const fetchRovers = () => {
     fetch(
       "https://api.nasa.gov/mars-photos/api/v1/rovers?api_key=IS8tNjdFom9KZaHuJDDeBbqGxFN0hwKvY2KI9pRd"
     )
       .then((response) => response.json())
       .then((response) => {
         setRoverData(response.rovers);
-        console.log(response.rovers);
       });
+  };
+
+  const fetchPhotos = () => {
+    fetch(
+      `https://api.nasa.gov/mars-photos/api/v1/rovers/${rover.name}/photos?sol=${sol}&camera=${camera.name}&page=1&api_key=IS8tNjdFom9KZaHuJDDeBbqGxFN0hwKvY2KI9pRd`
+    )
+      .then((response) => response.json())
+      .then((response) => setPhotos(response.photos))
+      .catch(error => alert("Error occured: " + error))
+  };
+
+  useEffect(() => {
+    fetchRovers();
   }, []);
+
+  useEffect(() => {
+    if (sol > 0) {
+      fetchPhotos();
+    }
+  }, [sol]);
 
   const RoverSelect = (
     <FormControl>
@@ -140,42 +159,49 @@ function App() {
   const SolSelect =
     camera === null ? null : (
       <div className="sol_select">
-        <Slider
-          value={sol}
-          min={0}
-          step={1}
-          max={rover.max_sol}
-          onChange={solSliderHanlder}
-          valueLabelDisplay="auto"
-          aria-labelledby="non-linear-slider"
-        />
-        <Input
-          value={sol}
-          margin="dense"
-          onChange={solInputHandler}
-          inputProps={{
-            step: 1,
-            min: 0,
-            max: rover.max_sol,
-            type: "number",
-            "aria-labelledby": "input-slider",
-          }}
-        />
+        <div className="sol_controls-wrapper">
+          <Slider
+            value={sol}
+            min={0}
+            step={1}
+            max={rover.max_sol}
+            onChange={solSliderHanlder}
+            valueLabelDisplay="auto"
+            aria-labelledby="non-linear-slider"
+          />
+          <TextField
+            id="outlined-number"
+            label="Sol"
+            type="number"
+            value={sol}
+            onChange={solInputHandler}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            variant="outlined"
+          />
+        </div>
       </div>
     );
 
-    const Photos = (<div className="photos_container">
-
-    </div>);
+  const Photos =
+    sol < 0 && photos.length === 0 ? null : (
+      <div className="photos">
+        {photos.map((e) => (
+          <img className="photo" key={e.id} src={e.img_src} />
+        ))}
+      </div>
+    );
 
   return (
     <div className="App">
-      <header>Nasa</header>
+      <header></header>
       <div className="container">
         {RoverSelect}
         {RoverInfo}
         {CameraSelect}
         {SolSelect}
+        {Photos}
       </div>
     </div>
   );

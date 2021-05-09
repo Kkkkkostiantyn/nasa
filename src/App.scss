@@ -1,6 +1,7 @@
 * {
   margin: 0px;
   padding: 0px;
+  box-sizing: border-box;
 }
 
 body {
@@ -25,16 +26,29 @@ body {
     height: 100%;
     width: 100%;
     max-width: 1080px;
+    padding: 0 10px 0 10px;
     margin: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
     .MuiFormControl-root {
-      width: 70%;
+      width: 100%;
     }
     .rover_select {
       width: 100%;
       margin-top: 5px;
+      .MuiSelect-root {
+        width: 100%;
+        background-color: white;
+        display: flex;
+        justify-content: center;
+      }
+      .MuiSelect-select {
+        display: flex;
+        justify-content: center;
+      }
+    }
+    .camera_select {
       .MuiSelect-root {
         width: 100%;
         background-color: white;
@@ -52,12 +66,39 @@ body {
       flex-wrap: wrap;
       justify-content: center;
       .MuiListItem-root {
-        width: 160px;
+        width: 130px;
       }
     }
     .sol_select {
-      // display: flex;
-      // justify-content: space-between;
+      margin-top: 30px;
+      width: 100%;
+      .sol_title {
+        display: flex;
+        justify-content: center;
+        font-weight: normal;
+      }
+      .sol_controls-wrapper {
+        display: flex;
+        justify-content: space-between;
+      }
+      justify-content: space-between;
+      .MuiSlider-root {
+        width: 75%;
+        padding: 30px 0;
+      }
+      .MuiTextField-root {
+        width: 20%;
+      }
+    }
+    .photos {
+      margin-top: 30px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      img {
+        width: 100%;
+      }
     }
   }
 }
