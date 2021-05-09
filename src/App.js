@@ -46,7 +46,6 @@ function App() {
   };
 
   const loadMoreHandler = () => {
-    console.log("load more")
     setPageCount(prev => {
       fetchPhotos(prev + 1);
       return(prev + 1);
@@ -63,7 +62,6 @@ function App() {
   };
 
   const fetchPhotos = (page = 1) => {
-    console.log("fetching photos")
     fetch(
       `https://api.nasa.gov/mars-photos/api/v1/rovers/${rover.name}/photos?sol=${sol}&camera=${camera.name}&page=${page}&api_key=IS8tNjdFom9KZaHuJDDeBbqGxFN0hwKvY2KI9pRd`
     )
