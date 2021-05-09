@@ -31,6 +31,7 @@ function App() {
     setSol(0);
     setPhotos([]);
   };
+
   const cameraSelectHandler = (event) => {
     setCamera(event.target.value);
     setSol(0);
@@ -46,46 +47,46 @@ function App() {
   };
 
   const loadMoreHandler = () => {
-    setPageCount(prev => {
+    setPageCount((prev) => {
       fetchPhotos(prev + 1);
-      return(prev + 1);
+      return prev + 1;
     });
-  }
-
-  const fetchRovers = () => {
-    fetch(
-      "https://api.nasa.gov/mars-photos/api/v1/rovers?api_key=IS8tNjdFom9KZaHuJDDeBbqGxFN0hwKvY2KI9pRd"
-    )
-      .then(response => response.json())
-      .then(response => setRoverData(response.rovers))
-      .catch(error => alert("Error occured: " + error));
   };
 
-  const fetchPhotos = (page = 1) => {
-    fetch(
-      `https://api.nasa.gov/mars-photos/api/v1/rovers/${rover.name}/photos?sol=${sol}&camera=${camera.name}&page=${page}&api_key=IS8tNjdFom9KZaHuJDDeBbqGxFN0hwKvY2KI9pRd`
-    )
-      .then(response => response.json())
-      .then(response => {
-        setPhotos((prev) => prev.concat(response.photos));
-        if (page > 1 && response.photos.length === 0) {
-          alert("Last Page");
-        }
-      })
-      .catch(error => alert("Error occured: " + error));
-  };
-
-  useEffect(() => {
-    fetchRovers();
-  }, []);
-
-  useEffect(() => {
+  const updatePhotos = () => {
     setPhotos([]);
     setPageCount(1);
     if (sol > 0) {
       fetchPhotos();
     }
-  }, [sol]);
+  };
+
+  const fetchRovers = () => {
+    fetch(
+      "https://api.nasa.gov/mars-photos/api/v1/rovers?api_key=oiuDJNdk5OSiEChvQztYQ7Ea3sXjmKQTVsXr1Tma"
+    )
+      .then((response) => response.json())
+      .then((response) => setRoverData(response.rovers))
+      .catch((error) => alert("Error occured: " + error));
+  };
+
+  const fetchPhotos = (page = 1) => {
+    fetch(
+      `https://api.nasa.gov/mars-photos/api/v1/rovers/${rover.name}/photos?sol=${sol}&camera=${camera.name}&page=${page}&api_key=oiuDJNdk5OSiEChvQztYQ7Ea3sXjmKQTVsXr1Tma`
+    )
+      .then((response) => response.json())
+      .then((response) => {
+        setPhotos((prev) => prev.concat(response.photos));
+        if (page > 1 && response.photos.length === 0) {
+          alert("Last Page");
+        }
+      })
+      .catch((error) => alert("Error occured: " + error));
+  };
+
+  useEffect(() => {
+    fetchRovers();
+  }, []);
 
   const RoverSelect = (
     <FormControl>
@@ -180,6 +181,7 @@ function App() {
             step={1}
             max={rover.max_sol}
             onChange={solSliderHanlder}
+            onChangeCommitted={updatePhotos}
             valueLabelDisplay="auto"
             aria-labelledby="non-linear-slider"
           />
@@ -189,9 +191,6 @@ function App() {
             type="number"
             value={sol}
             onChange={solInputHandler}
-            InputLabelProps={{
-              shrink: true,
-            }}
             variant="outlined"
           />
         </div>
@@ -205,11 +204,15 @@ function App() {
       <>
         <div className="photos">
           {photos.map((e) => (
-            <img className="photo" key={e.id} src={e.img_src} />
+            <img alt="photo" className="photo" key={e.id} src={e.img_src} />
           ))}
         </div>
         {photos.length < 24 ? null : (
-          <Button onClick={loadMoreHandler} className="loadMoreButton" variant="contained" color="primary">
+          <Button
+            onClick={loadMoreHandler}
+            className="loadMoreButton"
+            variant="contained"
+            color="primary">
             Load More
           </Button>
         )}
